@@ -44,6 +44,9 @@ module.exports = {
         cst: "0px 0px 5px 1px grey",
         cstgr: "0px 0px 22px 1px green",
       },
+      screens: {
+        xsm: "420px",
+      },
     },
   },
   variants: {
