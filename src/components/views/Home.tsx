@@ -653,9 +653,9 @@ interface UserNft {
 
           {/* Bonus Claim Bar  */}
           <div className="sm:flex items-center justify-between mt-10 bg-LightPurple rounded-2xl sm:py-8 py-5 md:px-11 sm:px-8 px-5">
-            <h1 className="text-2xl">Stake and earn rewards (5 $BPunk / Day)</h1>
+            <h1 className="text-2xl">Stake and earn rewards (5 $WBPunk / Day)</h1>
             <div className="sm:flex items-center">
-              <h1 className="my-5 sm:my-0 text-2xl">{Number(reward).toFixed(3)} $BPunk</h1>
+              <h1 className="my-5 sm:my-0 text-2xl">{Number(reward).toFixed(3)} $WBPunk</h1>
               <button
                 className="sm:ml-5 bg-pink-600 text-white py-2 px-8 rounded-md font-semibold hover:bg-green-500 hover:text-black"
                 title="COMING SOON"
