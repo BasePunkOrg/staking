@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	background-color: #0d0d2e;
+	font-family: "Open Sans";
+}
+.body-bg {
+	background: linear-gradient(to right, #237951 ,#252c51, #010937 );
+	font-family: "Open Sans";
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-size: cover;
+}
+
+.flex-basis {
+	flex-basis: 100% !important;
+}
+.basis-half {
+	flex-basis: 49% !important;
+}
+.cardTop {
+	top: 110px !important;
+}
+.imgTop {
+	top: 4px !important;
+}
+
+.panel {
+	max-height: 600px;
+	overflow-y: auto;
+}
+
+@media (min-width:640px){
+	.flex-basis {
+		flex-basis: 49% !important;
+	}
+}
+@media (min-width:768px){
+	.flex-basis {
+		flex-basis: 32% !important;
+	}
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #623a3a7d;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #53B1DF,#B13FCF);
+	border-radius: 12px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  /* background: #555; */
+}
