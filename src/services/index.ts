@@ -43,7 +43,6 @@ export const unstakeItem = async (ids: any) => {
             const signer = provider.getSigner()
             const staking_contract = new ethers.Contract(CONFIG.NFTStake.address, CONFIG.NFTStake.ABI, signer);
 
-            // const unstake_tx = await staking_contract.unstake(ids,{ gasLimit: 500000, gasPrice: ethers.utils.parseUnits('1', 'gwei') })
             const unstake_tx = await staking_contract.unstake(ids);
             await unstake_tx.wait()
 
@@ -67,10 +66,10 @@ export const claim = async (ids: any) => {
             const signer = provider.getSigner()
             const staking_contract = new ethers.Contract(CONFIG.NFTStake.address, CONFIG.NFTStake.ABI, signer);
 
-            // const claim_tx = await staking_contract.claim(ids, { gasLimit: 500000, gasPrice: ethers.utils.parseUnits('1', 'gwei') });
+            
             const claim_tx = await staking_contract.claim(ids);
        
-            // await claim_tx.wait()
+            
             const receipt = await claim_tx.wait();
             console.log('Revert Reason:', receipt && receipt.events && receipt.events[0].event === 'Failure' ? receipt.events[0].args.reason : 'No revert reason');
             return 1;
@@ -102,6 +101,27 @@ export const GetUserNfts = async (user: string) => {
         }else {
             return [];
         }
+       
+      }
+    } catch (error) {
+      console.error(error);
+      throw error; // Propagate the error
+    }
+  };
+  export const GetNFTinfo = async (id: number) => {
+    try {
+      if (window.ethereum) {
+        const options = {method: 'GET', headers: {accept: 'application/json'}};
+
+       const response = await fetch(`https://base-mainnet.g.alchemy.com/nft/v3/zicQa6Mlagyougi0C6w78m24w3mThFWC/getNFTMetadata?contractAddress=0x89290b2FaD76bF4a6Ed9D8066f644d45530FA920&tokenId=${id}&tokenType=ERC721&refreshCache=false`, options)
+       
+        const datas = await response.json();
+        if(datas){
+            return datas;
+        }
+       
+
+       
        
       }
     } catch (error) {

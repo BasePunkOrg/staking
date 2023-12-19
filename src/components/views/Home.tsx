@@ -10,8 +10,9 @@ import CONFIG from "../../config";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { ethers } from "ethers";
-import { GetUserNfts, claim, stakeItem, unstakeItem } from "../../services";
+import { GetNFTinfo, GetUserNfts, claim, stakeItem, unstakeItem } from "../../services";
 import 'react-toastify/dist/ReactToastify.css';
+import img from "../../assets/2xLogo.png"
 
 
 
@@ -302,33 +303,117 @@ interface UserNft {
             
         })
 
-        const _userNfts: any = await Promise.all(userTokens.map(async (nft: any) => {
+      //   const _userNfts: any = await Promise.all(userTokens.map(async (nft: any) => {
           
-          const tokenUri = await nft_contract.tokenURI(nft);
-          const res = await getNftInfoFromUri(tokenUri.toString());
-          console.log(res);
-          return {
-            name: res?.name,
-            id: nft,
-            imageUri: res?.imageUri
-          }
-      }))
+      //     // const tokenUri = await nft_contract.tokenURI(nft);
+      //     const res = await GetNFTinfo(nft);
+      //     console.log(res);
+      //     return {
+      //       name: res?.name,
+      //       id: nft,
+      //       imageUri: res?.image.pngUrl
+      //     }
+      // }))
 
+      // setUserNfts(_userNfts);
+      let _userNfts: any = [];
+      const delay = (ms:any) => new Promise(resolve => setTimeout(resolve, ms));
+
+      const processUserNFTs = async (tokens:any) => {
+        const batchSize = 20;
+        const totalBatches = Math.ceil(tokens.length / batchSize);
+
+        for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+          const start = batchIndex * batchSize;
+          const end = (batchIndex + 1) * batchSize;
+          const batchTokens = tokens.slice(start, end);
+
+          const batchResults = await Promise.all(batchTokens.map(async (nft:any) => {
+            const res = await GetNFTinfo(nft);
+            console.log(res);
+            return {
+              name: res?.name,
+              id: nft,
+              imageUri: res?.image.pngUrl
+            };
+          }));
+
+    // Process the results of the batch, you can store them or perform further actions
+
+          console.log('Processed batch:', batchResults);
+          _userNfts = _userNfts.concat(batchResults);
+
+    
+
+
+          // If it's not the last batch, add a delay before the next batch
+          if (batchIndex < totalBatches - 1) {
+            await delay(1000); // Adjust the delay as needed (1000 ms = 1 second)
+          }
+        }
+      };
+
+
+
+      
+        await processUserNFTs(userTokens);
+      console.log("_userNFT",_userNfts);
       setUserNfts(_userNfts);
+      
+      
 
-       const _stakedNfts: any = await Promise.all(stakedTokens.map(async (nft) => {
+
+
+      //  const _stakedNfts: any = await Promise.all(stakedTokens.map(async (nft) => {
          
-          const tokenUri = await nft_contract.tokenURI(nft);
-          const res = await getNftInfoFromUri(tokenUri.toString());
-          console.log(res);
-          return {
-            name: res?.name,
-            id: nft,
-            imageUri: res?.imageUri
+      //   const res = await GetNFTinfo(nft);
+      //   console.log(res);
+      //   return {
+      //     name: res?.name,
+      //     id: nft,
+      //     imageUri: res?.image.pngUrl
+      //   }
+      // }))
+      let _stakedNfts:any = [];
+      const processStakedNFTs = async (tokens:any) => {
+        const batchSize = 20;
+        const totalBatches = Math.ceil(tokens.length / batchSize);
+      
+        for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+          const start = batchIndex * batchSize;
+          const end = (batchIndex + 1) * batchSize;
+          const batchTokens = tokens.slice(start, end);
+      
+          const batchResults = await Promise.all(batchTokens.map(async (nft:any) => {
+            const res = await GetNFTinfo(nft);
+            console.log(res);
+            return {
+              name: res?.name,
+              id: nft,
+              imageUri: res?.image.pngUrl
+            };
+          }));
+      
+          // Process the results of the batch, you can store them or perform further actions
+      
+          console.log('Processed batch:', batchResults);
+          _stakedNfts = _stakedNfts.concat(batchResults);
+      
+          
+      
+      
+          // If it's not the last batch, add a delay before the next batch
+          if (batchIndex < totalBatches - 1) {
+            await delay(1000); // Adjust the delay as needed (1000 ms = 1 second)
           }
-      }))
-
+        }
+      };
+     
+      await processStakedNFTs(stakedTokens);
+      console.log("_staked",_stakedNfts);
       setStakedNfts(_stakedNfts);
+      
+      
       setShowLoader(false);
        
       }
@@ -733,28 +818,21 @@ interface UserNft {
                   <span className="font-extrabold text-3xl sm:text-4xl italic text-white">BasePunk</span>
                 </a>
                 <span className="text-sm sm:text-base mt-2 sm:mt-6 block text-center sm:text-left">
-                  Base punk is a digital collection and global community of creators, developers, and innovators. We are
-                  the change makers.
+                  Base punk is a digital collection and global community of creators, developers, and innovators. We are the change makers.
                 </span>
               </div>
               <div className="mt-4 sm:mt-0 text-center flex-1">
                 <h4 className="text-sm sm:text-base sm:text-center md:text-start">Follow us</h4>
                 <ul className="my-4 sm:my-5 md:items-start flex items-center justify-center">
                   <li className="sm:mx-5">
-                    <a href="https://discord.gg/tVzdjzFX4V" target="_blank" rel="noreferrer">
-                      <img
-                        src={"https://cdn0.iconfinder.com/data/icons/tuts/256/telegram.png"}
-                        alt="Telegram"
-                        className="w-10"
-                      />
+                    <a href="https://discord.com/invite/basepunk" target="_blank" rel="noreferrer">
+                      <img src={"https://img.icons8.com/?size=50&id=30888&format=png"} alt="Discord" className="w-10" />
                     </a>
                   </li>
                   <li className="mx-5">
-                    <a href=" https://twitter.com/solswipecard" target="_blank" rel="noreferrer">
+                    <a href="https://twitter.com/Punkonbase" target="_blank" rel="noreferrer">
                       <img
-                        src={
-                          "https://img.freepik.com/free-vector/new-2023-twitter-logo-x-icon-design_1017-45418.jpg?size=626&ext=jpg"
-                        }
+                        src={"https://img.freepik.com/free-vector/new-2023-twitter-logo-x-icon-design_1017-45418.jpg?size=626&ext=jpg"}
                         alt="Twitter"
                         className="w-8"
                       />
@@ -762,20 +840,25 @@ interface UserNft {
                   </li>
                 </ul>
               </div>
-              <div className="text-center flex-1">
-                <p className="text-sm sm:text-base text-center md:text-start">Copyright @ 2023 , Made by Base punk</p>
+              <div className="text-center flex-1 mt-4 sm:mt-0">
                 <p className="text-sm sm:text-base text-center md:text-start">
-                Developed by{''}
-                <a
-                  className="hover:text-black text-blue-500  transition duration-300 ml-2" // Add margin-left
-                  href="https://www.2xsolution.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  2x Solution
-                </a>
-              </p>
-
+                  Developed with ❤️ by{' '} </p>
+                  <div>
+                  <a
+                    className="hover:text-black text-blue-500 transition duration-300 ml-2 flex items-center flex-col"
+                    href="https://www.2xsolution.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={img}
+                      alt="2x Solution Logo"
+                      className="h-30 mt-1"
+                    />
+                  </a>
+                  </div>
+                  
+              
               </div>
             </div>
           </footer>
