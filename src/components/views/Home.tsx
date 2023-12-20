@@ -10,7 +10,7 @@ import CONFIG from "../../config";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { ethers } from "ethers";
-import { GetNFTinfo, GetUserNfts, claim, stakeItem, unstakeItem } from "../../services";
+import { GetNFTinfo, GetUserNfts, claim, stakeAllItem, stakeItem, unstakeItem } from "../../services";
 import "react-toastify/dist/ReactToastify.css";
 import img from "../../assets/2xLogo.png";
 
@@ -455,7 +455,7 @@ const Home = () => {
       setUnStackProduct([]);
       setStakedNfts(stakedNfts.concat(staking_nfts));
       await getInfo();
-      toast.success("NFT unstaked succesfully");
+      toast.success("NFT staked succesfully");
     }
   };
 
@@ -468,7 +468,7 @@ const Home = () => {
 
     const staking_nftIds = userNfts.map((nft: any) => nft.id);
 
-    const res = await stakeItem(staking_nftIds.filter((_nft: any, index: number) => index < 10));
+    const res = await stakeAllItem(staking_nftIds.filter((_nft: any, index: number) => index < 10));
     if (res === 1) {
       setUnStackProduct([]);
       setStakedNfts(stakedNfts.concat(staking_nftIds.filter((_nft: any, index: number) => index < 10)));
@@ -787,7 +787,7 @@ const Home = () => {
                     </a>
                   </li>
                   <li className="bg-[#4ccbc9] rounded-xl w-10 h-10 flex items-center justify-center">
-                    <a href="https://twitter.com/Punkonbase" target="_blank" rel="noreferrer">
+                    <a href="https://medium.com/@punkonbase/" target="_blank" rel="noreferrer">
                       <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                           d="M4.75625 8.21094C4.75625 7.90625 4.63776 7.63542 4.40078 7.39844L2.11563 4.65625V4.25H9.27578L14.7602 16.3359L19.5844 4.25H26.3891V4.65625L24.4086 6.53516C24.2393 6.67057 24.1716 6.85677 24.2055 7.09375V20.9062C24.1716 21.1432 24.2393 21.3294 24.4086 21.4648L26.3383 23.3438V23.75H16.6898V23.3438L18.6703 21.4141C18.7719 21.3125 18.8227 21.2448 18.8227 21.2109C18.8565 21.1432 18.8734 21.0247 18.8734 20.8555V9.68359L13.3891 23.6992H12.6273L6.17813 9.68359V19.0781C6.14427 19.4844 6.26276 19.8398 6.53359 20.1445L9.12344 23.293V23.6992H1.81094V23.293L4.40078 20.1445C4.70547 19.8398 4.82396 19.4844 4.75625 19.0781V8.21094Z"
@@ -797,14 +797,13 @@ const Home = () => {
                     </a>
                   </li>
                   <li className="bg-[#4ccbc9] rounded-xl w-10 h-10 flex items-center justify-center">
-                    <a href="https://twitter.com/Punkonbase" target="_blank" rel="noreferrer">
+                    <a href="https://github.com/Basepunkorg" target="_blank" rel="noreferrer">
                       <svg
                         height="28"
-                        widths="28"
+                        width="28"
                         aria-hidden="true"
                         viewBox="0 0 16 16"
                         version="1.1"
-                        width="32"
                         data-view-component="true"
                       >
                         <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>

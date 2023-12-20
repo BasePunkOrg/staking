@@ -11,13 +11,57 @@ export const stakeItem = async (ids:any) => {
             const signer = provider.getSigner();
             const nft_contract = new ethers.Contract(CONFIG.NFTContract.address, CONFIG.NFTContract.ABI, signer);
             const staking_contract = new ethers.Contract(CONFIG.NFTStake.address, CONFIG.NFTStake.ABI, signer);
-
+            const user = await signer.getAddress();
             // Loop through each token ID and approve it
-            for (const id of ids) {
-                console.log('Approving token ID:', id);
-                const approve_tx = await nft_contract.approve(CONFIG.NFTStake.address, id);
+           
+            const approvedALL = await nft_contract.isApprovedForAll(user,CONFIG.NFTStake.address);
+            if(!approvedALL){
+                for (const id of ids) {
+                    const approved = await nft_contract.getApproved(id);
+                    if(approved !=CONFIG.NFTStake.address){
+                        console.log('Approving token ID:', id);
+                        const approve_tx = await nft_contract.approve(CONFIG.NFTStake.address, id);
+                        await approve_tx.wait();
+                    }
+                   
+                }
+            }
+            
+
+            // Now that all tokens are approved, stake them
+            console.log('Staking tokens:', ids);
+            const stake_tx = await staking_contract.stake(ids);
+            await stake_tx.wait();
+
+        
+            return 1;
+        } catch (error) {
+            toast.error("An error has occurred while staking. Please try again.");
+            console.error(error);
+            return 0;
+        }
+    } else {
+        toast.error("Please connect to the wallet.");
+    }
+}
+
+export const stakeAllItem = async (ids:any) => {
+    console.log(ids);
+    if (window.ethereum) {
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+            const signer = provider.getSigner();
+            const user = await signer.getAddress();
+            const nft_contract = new ethers.Contract(CONFIG.NFTContract.address, CONFIG.NFTContract.ABI, signer);
+            const staking_contract = new ethers.Contract(CONFIG.NFTStake.address, CONFIG.NFTStake.ABI, signer);
+            console.log(user);
+            const approved = await nft_contract.isApprovedForAll(user,CONFIG.NFTStake.address);
+            if(!approved){
+                const approve_tx = await nft_contract.setApprovalForAll(CONFIG.NFTStake.address, true);
                 await approve_tx.wait();
             }
+           
+            
 
             // Now that all tokens are approved, stake them
             console.log('Staking tokens:', ids);
