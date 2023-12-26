@@ -84,6 +84,27 @@ const Home = () => {
     localStorage.setItem(CONFIG.WALLET_ADRESS_LOCALSTORAGE, "");
   };
 
+  async function isConnected() {
+    const accounts = await window.ethereum.request({method: 'eth_accounts'});       
+    if (accounts.length) {
+       console.log(`You're connected to: ${accounts[0]}`);
+       dispatch(
+        CONNECT({
+          wallet: `connected`,
+          address: accounts[0],
+        })
+      );
+    } else {
+       console.log("Metamask is not connected");
+       dispatch(
+        CONNECT({
+          wallet: `disconnect`,
+          address: ``,
+        })
+      );
+    }
+ }
+
   useEffect(() => {
     const get_walletStatus: any = localStorage.getItem(CONFIG.WALLET_STATUS_LOCALSTORAGE);
     const get_walletAddress: any = localStorage.getItem(CONFIG.WALLET_ADRESS_LOCALSTORAGE);
@@ -213,17 +234,36 @@ const Home = () => {
       });
     } catch {}
   }, []);
+  useEffect(()=> {
+    try{
+      if(!window.ethereum.isConnected() || !window.ethereum._metamask.isUnlocked()){
+        dispatch(
+          CONNECT({
+            wallet: `disconnect`,
+            address: ``,
+          })
+        );
+        localStorage.setItem(CONFIG.WALLET_STATUS_LOCALSTORAGE, "disconnect");
+        localStorage.setItem(CONFIG.WALLET_ADRESS_LOCALSTORAGE, "");
+      }
+    }catch{
+
+    }
+  }, [])
 
   useEffect(() => {
-    const get_walletStatus: any = localStorage.getItem(CONFIG.WALLET_STATUS_LOCALSTORAGE);
-    const get_walletAddress: any = localStorage.getItem(CONFIG.WALLET_ADRESS_LOCALSTORAGE);
-    dispatch(
-      CONNECT({
-        wallet: get_walletStatus,
-        address: get_walletAddress,
-      })
-    );
+    const fetchData = async () => {
+      try {
+        await isConnected();
+      } catch (error) {
+        console.error("Error fetching metamask:", error);
+        // Handle errors if needed
+      }
+    };
+
+    fetchData();
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -304,9 +344,9 @@ const Home = () => {
                 const res = await GetNFTinfo(nft);
                 console.log(res);
                 return {
-                  name: res?.name,
+                  name: res?.nft.name,
                   id: nft,
-                  imageUri: res?.image.pngUrl,
+                  imageUri: res?.nft.image_url,
                 };
               })
             );
@@ -352,9 +392,9 @@ const Home = () => {
                 const res = await GetNFTinfo(nft);
                 console.log(res);
                 return {
-                  name: res?.name,
+                  name: res?.nft.name,
                   id: nft,
-                  imageUri: res?.image.pngUrl,
+                  imageUri: res?.nft.image_url,
                 };
               })
             );
@@ -556,15 +596,15 @@ const Home = () => {
                 </a>
               </li>
               <li className="text-base flex ml-4">
-                {walletStatus.status === `connected` ? (
+                {storeData.wallet === `connected` ? (
                   <div
                     className="text-indigo-600 bg-white rounded-[4px]  hover:bg-green-500 py-[0.5rem] px-[1rem] cursor-pointer"
                     onClick={handleDisConnect}
                   >
-                    {walletStatus?.address
-                      ? walletStatus?.address?.substr(0, 6) +
+                    {storeData?.address
+                      ? storeData?.address?.substr(0, 6) +
                         "..." +
-                        walletStatus?.address?.substr(storeData?.address.length - 4, 4)
+                        storeData?.address?.substr(storeData?.address.length - 4, 4)
                       : `Connect Wallet`}
                   </div>
                 ) : (

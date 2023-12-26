@@ -155,9 +155,14 @@ export const GetUserNfts = async (user: string) => {
   export const GetNFTinfo = async (id: number) => {
     try {
       if (window.ethereum) {
-        const options = {method: 'GET', headers: {accept: 'application/json'}};
+        const options = {
+            method: 'GET',
+            headers: {accept: 'application/json', 'x-api-key': 'f9e375f6a6384fd7bf0b2aa26af5c6c9'}
+          };
 
-       const response = await fetch(`https://base-mainnet.g.alchemy.com/nft/v3/zicQa6Mlagyougi0C6w78m24w3mThFWC/getNFTMetadata?contractAddress=0x89290b2FaD76bF4a6Ed9D8066f644d45530FA920&tokenId=${id}&tokenType=ERC721&refreshCache=false`, options)
+       const response = await fetch(`https://api.opensea.io/api/v2/chain/base/contract/0x89290b2FaD76bF4a6Ed9D8066f644d45530FA920/nfts/${id}`, options)
+       console.log(response);
+       
        
         const datas = await response.json();
         if(datas){
